@@ -1,18 +1,11 @@
 import 'dart:developer';
-
-import 'package:final_project/calender_page.dart';
-import 'package:final_project/forgotPassword.dart';
-import 'package:final_project/globals.dart';
-import 'package:final_project/signup_page.dart';
-import 'package:final_project/start_page.dart';
-import 'package:final_project/userScreen.dart';
+import 'package:final_project/Pages/SignupPage.dart';
+import 'package:final_project/Pages/UserScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'GroupPage.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'globals.dart';
+import 'ForgotPasswordState.dart';
+import '../Objects/Globals.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -34,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> forgotPassword() async {
     await Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const ForgotPassword()),
+      MaterialPageRoute(builder: (context) => const ForgotPasswordPage()),
     );
   }
 

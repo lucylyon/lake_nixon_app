@@ -1,27 +1,67 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:final_project/GroupPage.dart';
-import 'package:final_project/LakeNixonEvent.dart';
-import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'Group.dart';
-import "package:final_project/calender_page.dart";
-import "Event.dart";
+import 'dart:ui';
 
-Color nixonblue = const Color.fromRGBO(165, 223, 249, 1);
-Color nixonyellow = const Color.fromRGBO(255, 248, 153, 1);
-Color nixonbrown = const Color.fromRGBO(137, 116, 73, 1);
-Color nixongreen = const Color.fromRGBO(81, 146, 78, 1);
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'Group.dart';
+import 'Event.dart';
 
 FirebaseFirestore db = FirebaseFirestore.instance;
 
-List<Event> dbEvents = [];
+/// here!
+//List<Event> dbEvents = [];
 
 Map<Group, List<Appointment>> events = {};
 
 var assignments = {};
 
 var events2 = {};
+
+// int indexEvents(String name) {
+//   int count = 0;
+//   for (Event element in dbEvents) {
+//     if (element.name == name) {
+//       return count;
+//     }
+//     count++;
+//   }
+//   return -1;
+// }
+
+// Group? indexGroups(String name) {
+//   int count = 0;
+//   int index = -1;
+//   Group? group;
+//   events.forEach((key, value) {
+//     if (key.name == name) {
+//       index = count;
+//       group = key;
+//     }
+//     count++;
+//   });
+//   return group;
+// }
+
+void createGroup(Group group) {
+  if (events.containsKey(group)) {
+  } else {
+    //events[group] = <LakeNixonEvent>[];
+    events[group] = <Appointment>[];
+    assignments[group] = <Group>[];
+  }
+}
+
+//// keep shit here ////
+
+Color nixonblue = const Color.fromRGBO(165, 223, 249, 1);
+Color nixonyellow = const Color.fromRGBO(255, 248, 153, 1);
+Color nixonbrown = const Color.fromRGBO(137, 116, 73, 1);
+Color nixongreen = const Color.fromRGBO(81, 146, 78, 1);
+
+enum Edit { event, series }
+
+enum Delete { event, series }
+
+enum EndRule { never, endDate, count }
 
 List<Group> groups = <Group>[
   const Group(name: "Chipmunks", color: Color(0xFF0F8644), age: 1),
@@ -47,36 +87,20 @@ List<Group> groups = <Group>[
   const Group(name: "Admin", color: Color.fromARGB(255, 0, 0, 0), age: 9999)
 ];
 
-int indexEvents(String name) {
-  int count = 0;
-  for (Event element in dbEvents) {
-    if (element.name == name) {
-      return count;
-    }
-    count++;
-  }
-  return -1;
-}
-
-Group? indexGroups(String name) {
-  int count = 0;
-  int index = -1;
-  Group? group;
-  events.forEach((key, value) {
-    if (key.name == name) {
-      index = count;
-      group = key;
-    }
-    count++;
-  });
-  return group;
-}
-
-void createGroup(Group group) {
-  if (events.containsKey(group)) {
-  } else {
-    //events[group] = <LakeNixonEvent>[];
-    events[group] = <Appointment>[];
-    assignments[group] = <Group>[];
-  }
-}
+List<String> weekDay = <String>[
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday'
+];
+List<String> weekDayPosition = <String>[
+  'first',
+  'second',
+  'third',
+  'fourth',
+  'last'
+];
+List<String> mobileRecurrence = <String>['day', 'week', 'month', 'year'];

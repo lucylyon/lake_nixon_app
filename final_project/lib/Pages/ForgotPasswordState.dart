@@ -1,21 +1,22 @@
-import 'package:final_project/globals.dart';
-import 'package:final_project/login_page.dart';
+import 'package:final_project/Pages/LoginPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:final_project/globals.dart';
 
-class ForgotPassword extends StatefulWidget {
-  const ForgotPassword({super.key});
+import '../Objects/Globals.dart';
+
+
+class ForgotPasswordPage extends StatefulWidget {
+  const ForgotPasswordPage({super.key});
 
   @override
-  State<ForgotPassword> createState() => _ForgotPasswordState();
+  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
 }
 
-class _ForgotPasswordState extends State<ForgotPassword> {
+class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final _key = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
