@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project/Objects/Event.dart';
 import 'package:final_project/Objects/Group.dart';
 import 'package:final_project/Objects/LakeNixonEvent.dart';
-import 'package:final_project/Appointment%20Editor/AppointmentEditor.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +9,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
+import '../AppointmentEditor/AppointmentEditor.dart';
+import '../Objects/AppState.dart';
 import '../Objects/Globals.dart';
 
 List<LakeNixonEvent> appointments = <LakeNixonEvent>[];
@@ -76,37 +77,36 @@ class _CalendarPageState extends State<CalendarPage> {
     bool user = widget.isUser;
     //_checkAuth();
     //PRoblem of having to back out seems to come from these being futures
-    // getEvents(); FIX
+    getEvents();
     //getSavedEvents();
     _events = AppointmentDataSource(_getDataSource(widget.group));
 
     super.initState();
   }
 
-// FIX
-  // Future<void> getEvents() async {
-  //   CollectionReference events =
-  //       FirebaseFirestore.instance.collection("events");
-  //   final snapshot = await events.get();
-  //   if (snapshot.size > 0 && dbEvents.length == 0) {
-  //     List<QueryDocumentSnapshot<Object?>> data = snapshot.docs;
-  //     data.forEach((element) {
-  //       var event = element.data() as Map;
-  //       var tmp = Event(
-  //           name: event["name"],
-  //           ageMin: event["ageMin"],
-  //           groupMax: event["groupMax"]);
-  //       dbEvents.add(tmp);
-  //     });
-  //   } else {
-  //     print('No data available.3');
-  //   }
-  //   for (Event event in dbEvents) {
-  //     firebaseEvents
-  //         .add(DropdownMenuItem(value: event.name, child: Text(event.name)));
-  //   }
-  //   print(dbEvents);
-  // }
+  Future<void> getEvents() async {
+    CollectionReference events =
+        FirebaseFirestore.instance.collection("events");
+    final snapshot = await events.get();
+    if (snapshot.size > 0 && dbEvents.length == 0) {
+      List<QueryDocumentSnapshot<Object?>> data = snapshot.docs;
+      data.forEach((element) {
+        var event = element.data() as Map;
+        var tmp = Event(
+            name: event["name"],
+            ageMin: event["ageMin"],
+            groupMax: event["groupMax"]);
+        dbEvents.add(tmp);
+      });
+    } else {
+      print('No data available.3');
+    }
+    for (Event event in dbEvents) {
+      firebaseEvents
+          .add(DropdownMenuItem(value: event.name, child: Text(event.name)));
+    }
+    print(dbEvents);
+  }
 
   List<Appointment> _getDataSource(Group group) {
     _colorNames.add('Green');

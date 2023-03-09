@@ -2,13 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project/Objects/Event.dart';
 import 'package:final_project/Objects/Group.dart';
 import 'package:final_project/Objects/LakeNixonEvent.dart';
-import 'package:final_project/Appointment%20Editor/AppointmentEditor.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import '../Appointment Editor/AppointmentEditor.dart';
 import '../Objects/Globals.dart';
-import '../Objects/AppState.dart';
-
 
 List<LakeNixonEvent> appointments = <LakeNixonEvent>[];
 
@@ -58,7 +59,7 @@ class _UserCalendarPageState extends State<UserCalendarPage> {
   final List<Color> _colorCollection = <Color>[];
   final List<String> _timeZoneCollection = <String>[];
   late AppointmentDataSource _events;
-  //List<DropdownMenuItem<String>> firebaseEvents = [];
+  List<DropdownMenuItem<String>> firebaseEvents = [];
   List<Appointment> savedEvents = [];
 
   @override
@@ -67,75 +68,75 @@ class _UserCalendarPageState extends State<UserCalendarPage> {
     _calendarController.view = _currentView;
     bool user = widget.isUser;
     //_checkAuth();
-    //getEvents();
-    //getSavedEvents();
+    getEvents();
+    getSavedEvents();
     _events = AppointmentDataSource(_getDataSource(widget.group));
     print(_events);
 
     super.initState();
   }
 
-  // Future<void> getEvents() async {
-  //   CollectionReference events =
-  //       FirebaseFirestore.instance.collection("events");
-  //   final snapshot = await events.get();
-  //   if (snapshot.size > 0) {
-  //     List<QueryDocumentSnapshot<Object?>> data = snapshot.docs;
-  //     data.forEach((element) {
-  //       var event = element.data() as Map;
-  //       var tmp = Event(
-  //           name: event["name"],
-  //           ageMin: event["ageMin"],
-  //           groupMax: event["groupMax"]);
-  //       events.add(tmp);
+  Future<void> getEvents() async {
+    CollectionReference events =
+        FirebaseFirestore.instance.collection("events");
+    final snapshot = await events.get();
+    if (snapshot.size > 0) {
+      List<QueryDocumentSnapshot<Object?>> data = snapshot.docs;
+      data.forEach((element) {
+        var event = element.data() as Map;
+        var tmp = Event(
+            name: event["name"],
+            ageMin: event["ageMin"],
+            groupMax: event["groupMax"]);
+        dbEvents.add(tmp);
 
-  //       firebaseEvents.add(
-  //           DropdownMenuItem(value: event["name"], child: Text(event["name"])));
-  //     });
-  //   } else {
-  //     print('No data available.');
-  //   }
-  //   print(dbEvents);
-  // }
+        firebaseEvents.add(
+            DropdownMenuItem(value: event["name"], child: Text(event["name"])));
+      });
+    } else {
+      print('No data available.');
+    }
+    print(dbEvents);
+  }
 
-  // Future<void> getSavedEvents() async {
-  //   CollectionReference schedules =
-  //       FirebaseFirestore.instance.collection("schedules");
-  //   final snapshot = await schedules.get();
-  //   if (snapshot.size > 0) {
-  //     List<QueryDocumentSnapshot<Object?>> data = snapshot.docs;
-  //     data.forEach((element) {
-  //       var event = element.data() as Map;
-  //       Map apps = event["appointments"];
+  Future<void> getSavedEvents() async {
+    CollectionReference schedules =
+        FirebaseFirestore.instance.collection("schedules");
+    final snapshot = await schedules.get();
+    if (snapshot.size > 0) {
+      List<QueryDocumentSnapshot<Object?>> data = snapshot.docs;
+      data.forEach((element) {
+        var event = element.data() as Map;
+        Map apps = event["appointments"];
 
-  //       apps.forEach((key, value) {
-  //         for (var _app in value) {
-  //           var app = _app["appointment"];
-  //           var test = app[2];
-  //           String valueString = test.split('(0x')[1].split(')')[0];
-  //           int value = int.parse(valueString, radix: 16);
-  //           Color color = new Color(value);
-  //           print(app[6]);
-  //           Appointment tmp = Appointment(
-  //               startTime: app[0].toDate(),
-  //               endTime: app[1].toDate(),
-  //               color: color,
-  //               startTimeZone: app[3],
-  //               endTimeZone: app[4],
-  //               notes: app[5],
-  //               isAllDay: app[6],
-  //               subject: app[7],
-  //               resourceIds: app[8],
-  //               recurrenceRule: app[9]);
-  //           var group = indexGroups(key);
-  //           events[group]!.add(tmp);
-  //         }
-  //       });
-  //     });
-  //   } else {
-  //     print('No data available.');
-  //   }
-  // }
+        apps.forEach((key, value) {
+          for (var _app in value) {
+            var app = _app["appointment"];
+            var test = app[2];
+            String valueString = test.split('(0x')[1].split(')')[0];
+            int value = int.parse(valueString, radix: 16);
+            Color color = new Color(value);
+            print(app[6]);
+            Appointment tmp = Appointment(
+                startTime: app[0].toDate(),
+                endTime: app[1].toDate(),
+                color: color,
+                startTimeZone: app[3],
+                endTimeZone: app[4],
+                notes: app[5],
+                isAllDay: app[6],
+                subject: app[7],
+                resourceIds: app[8],
+                recurrenceRule: app[9]);
+            var group = indexGroups(key);
+            events[group]!.add(tmp);
+          }
+        });
+      });
+    } else {
+      print('No data available.');
+    }
+  }
 
   List<Appointment> _getDataSource(Group group) {
     _colorNames.add('Green');

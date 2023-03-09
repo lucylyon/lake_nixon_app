@@ -2,10 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project/Pages/UserCalendarPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../Objects/AppState.dart';
 import '../Objects/Globals.dart';
 import '../Objects/Group.dart';
 import 'CalendarPage.dart';
 import 'package:firebase_database/firebase_database.dart';
+import '../Objects/Event.dart';
 
 class GroupPage extends StatefulWidget {
   GroupPage({super.key, required this.title});

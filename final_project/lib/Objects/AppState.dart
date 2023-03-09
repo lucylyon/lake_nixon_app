@@ -1,33 +1,28 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project/Objects/Event.dart';
-import 'package:final_project/Objects/globals.dart';
+import 'package:final_project/Objects/LakeAppointment.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../firebase_options.dart';
-import 'Group.dart';
 
-// Color nixonblue = const Color.fromRGBO(165, 223, 249, 1);
-// Color nixonyellow = const Color.fromRGBO(255, 248, 153, 1);
-// Color nixonbrown = const Color.fromRGBO(137, 116, 73, 1);
-// Color nixongreen = const Color.fromRGBO(81, 146, 78, 1);
+/// to do:
+/// move colors from globals
+/// move groups from globals
+/// once groups in firebase -> make getGroups
+/// basically move everything from globals -> here, make everything consumer
 
 class AppState extends ChangeNotifier {
-  Color nixonblue = const Color.fromRGBO(165, 223, 249, 1);
-  Color nixonyellow = const Color.fromRGBO(255, 248, 153, 1);
-  Color nixonbrown = const Color.fromRGBO(137, 116, 73, 1);
-  Color nixongreen = const Color.fromRGBO(81, 146, 78, 1);
-
   List<Event> _events = [];
   List<Event> get events => _events;
 
-  List<Appointment> _schedules = [];
-  List<Appointment> get schedules => _schedules;
+  List<Appointment> _appointments = [];
+  List<Appointment> get appointments => _appointments;
 
-  Map<Group, List<Appointment>> _groupAppts = {};
-  Map<Group, List<Appointment>> get groupAppts => _groupAppts;
+  // List<Group> _groups = []; add groups to database, make getGroups function
+  // List<Group> get groups => _groups;
 
   AppState() {
     init();
@@ -35,7 +30,7 @@ class AppState extends ChangeNotifier {
 
   bool firstSnapshot = true;
   StreamSubscription<QuerySnapshot>? eventSubscription;
-  StreamSubscription<QuerySnapshot>? scheduleSubscription;
+  StreamSubscription<QuerySnapshot>? appointmentSubscription;
 
   Future<void> init() async {
     await Firebase.initializeApp(
@@ -44,22 +39,10 @@ class AppState extends ChangeNotifier {
     FirebaseAuth.instance.userChanges().listen(
       (user) {
         eventSubscription?.cancel();
-        scheduleSubscription?.cancel();
+        appointmentSubscription?.cancel();
         print("starting to listen");
         getEvents();
-        // eventSubscription = FirebaseFirestore.instance
-        //     .collection('events')
-        //     .snapshots()
-        //     .listen((snapshot) {
-        //   print("in snapshot");
-        //   snapshot.docs.forEach((document) {
-        //     _events.add(Event(
-        //         ageMin: document.data()['ageMin'],
-        //         groupMax: document.data()['groupMax'],
-        //         name: document.data()['name']));
-        //   });
-        // });
-        // print(snapshot.docChanges.toString()); //prints changes
+        getAppointments();
         firstSnapshot = false;
         notifyListeners();
       },
@@ -67,102 +50,28 @@ class AppState extends ChangeNotifier {
         print(error);
       },
     );
-
     notifyListeners();
   }
 
-// from globals
-  int indexEvents(String name) {
-    int count = 0;
-    for (Event element in _events) {
-      if (element.name == name) {
-        return count;
-      }
-      count++;
-    }
-    return -1;
-  }
-
-  Future<void> getSchedules() async {
-    scheduleSubscription = FirebaseFirestore.instance
-        .collection('schedules')
+  Future<void> getAppointments() async {
+    appointmentSubscription = FirebaseFirestore.instance
+        .collection('appointments')
         .snapshots()
         .listen((snapshot) {
-      print("in schedule snapshot");
+      print("in appointment snapshot");
       snapshot.docs.forEach((document) {
-        var event = document.data();
-        Map apps = event["appointments"];
-        apps.forEach((key, value) {
-          for (var _app in value) {
-            var app = _app["appointment"];
-            Color color = Color(value);
-            var tmp = Appointment(
-                startTime: app[0].toDate(),
-                endTime: app[1].toDate(),
-                color: color,
-                startTimeZone: app[3],
-                endTimeZone: app[4],
-                notes: app[5],
-                isAllDay: app[6],
-                subject: app[7],
-                resourceIds: app[8],
-                recurrenceRule: app[9]);
-            var group = indexGroups(key);
-            groupAppts[group]!.add(tmp);
-          }
-        });
-        // var schedule = document.data() as Map;
-        // Map appts = schedule["appointments"];
-        // appts.forEach((key, value) {
-        //   for (var _appts in value){
-
-        //   }
-        // });
-        ///
-        ///
-
-        //         startTime: app[0].toDate(),
-        //         endTime: app[1].toDate(),
-        //         color: color,
-        //         startTimeZone: app[3],
-        //         endTimeZone: app[4],
-        //         notes: app[5],
-        //         isAllDay: app[6],
-        //         subject: app[7],
-        //         resourceIds: app[8],
-        //         recurrenceRule: app[9]);
-        //     var group = indexGroups(key);
-
-        // var event = document.data() as Map;
-        // Map apps = event["appointments"];
-        // apps.forEach((key, value) {
-        //   for (var _app in value) {
-        //     var app = _app["appointment"];
-        //     var test = app[2];
-        //     String valueString = test.split('(0x')[1].split(')')[0];
-        //     int value = int.parse(valueString, radix: 16);
-        //     Color color = new Color(value);
-        //     print(app[6]);
-        //     Appointment tmp = Appointment(
-        //         startTime: app[0].toDate(),
-        //         endTime: app[1].toDate(),
-        //         color: color,
-        //         startTimeZone: app[3],
-        //         endTimeZone: app[4],
-        //         notes: app[5],
-        //         isAllDay: app[6],
-        //         subject: app[7],
-        //         resourceIds: app[8],
-        //         recurrenceRule: app[9]);
-        //     var group = indexGroups(key);
-        //  events[group]!.add(tmp);
-        //events was Map<Group, Appointment>
-
-        // ));
+        _appointments.add(LakeAppointment(
+            color: document.data()['color'],
+            endTime: document.data()['end_time'],
+            group: document.data()['group'],
+            notes: document.data()['notes'],
+            startTime: document.data()['start_time'],
+            subject: document.data()['subject']));
       });
     });
   }
 
+// was getEvents in Calendar Page
   Future<void> getEvents() async {
     eventSubscription = FirebaseFirestore.instance
         .collection('events')
@@ -177,150 +86,40 @@ class AppState extends ChangeNotifier {
       });
     });
   }
-}
 
-Future<void> getSavedEvents() async {
-  CollectionReference schedules =
-      FirebaseFirestore.instance.collection("schedules");
-  final snapshot = await schedules.get();
-  if (snapshot.size > 0) {
-    List<QueryDocumentSnapshot<Object?>> data = snapshot.docs;
-    data.forEach((element) {
-      var event = element.data() as Map;
-      Map apps = event["appointments"];
-      apps.forEach((key, value) {
-        for (var _app in value) {
-          var app = _app["appointment"];
-          var test = app[2];
-          String valueString = test.split('(0x')[1].split(')')[0];
-          int value = int.parse(valueString, radix: 16);
-          Color color = new Color(value);
-          print(app[6]);
-          Appointment tmp = Appointment(
-              startTime: app[0].toDate(),
-              endTime: app[1].toDate(),
-              color: color,
-              startTimeZone: app[3],
-              endTimeZone: app[4],
-              notes: app[5],
-              isAllDay: app[6],
-              subject: app[7],
-              resourceIds: app[8],
-              recurrenceRule: app[9]);
-          var group = indexGroups(key);
-          events[group]!.add(tmp);
-          //events was Map<Group, Appointment>
-        }
-      });
-    });
-  } else {
-    print('No data available.');
+  // from globals (not sure this is ever called/will be needed after changing database)
+  int indexEvents(String name) {
+    int count = 0;
+    for (Event element in _events) {
+      if (element.name == name) {
+        return count;
+      }
+      count++;
+    }
+    return -1;
   }
 }
 
-Group? indexGroups(String name) {
-  int count = 0;
-  int index = -1;
-  Group? group;
-  events.forEach((key, value) {
-    if (key.name == name) {
-      index = count;
-      group = key;
-    }
-    count++;
-  });
-  return group;
-}
-
-//List<Event> dbEvents = [];
-
-// FIX
-// Future<void> getEvents() async {
-//   CollectionReference events =
-//       FirebaseFirestore.instance.collection("events");
-//   final snapshot = await events.get();
-//   if (snapshot.size > 0 && dbEvents.length == 0) {
-//     List<QueryDocumentSnapshot<Object?>> data = snapshot.docs;
-//     data.forEach((element) {
-//       var event = element.data() as Map;
-//       var tmp = Event(
-//           name: event["name"],
-//           ageMin: event["ageMin"],
-//           groupMax: event["groupMax"]);
-//       dbEvents.add(tmp);
-//     });
-//   } else {
-//     print('No data available.3');
-//   }
-//   for (Event event in dbEvents) {
-//     firebaseEvents
-//         .add(DropdownMenuItem(value: event.name, child: Text(event.name)));
-//   }
-//   print(dbEvents);
-// }
-
-// from userCalendar / calendar
-// Future<void> getSavedEvents() async {
-//   CollectionReference schedules =
-//       FirebaseFirestore.instance.collection("schedules");
-//   final snapshot = await schedules.get();
-//   if (snapshot.size > 0) {
-//     List<QueryDocumentSnapshot<Object?>> data = snapshot.docs;
-//     data.forEach((element) {
-//       var event = element.data() as Map;
-//       Map apps = event["appointments"];
-
-//       apps.forEach((key, value) {
-//         for (var _app in value) {
-//           var app = _app["appointment"];
-//           var test = app[2];
-//           String valueString = test.split('(0x')[1].split(')')[0];
-//           int value = int.parse(valueString, radix: 16);
-//           Color color = new Color(value);
-//           print(app[6]);
-//           Appointment tmp = Appointment(
-//               startTime: app[0].toDate(),
-//               endTime: app[1].toDate(),
-//               color: color,
-//               startTimeZone: app[3],
-//               endTimeZone: app[4],
-//               notes: app[5],
-//               isAllDay: app[6],
-//               subject: app[7],
-//               resourceIds: app[8],
-//               recurrenceRule: app[9]);
-//           var group = indexGroups(key);
-//           events[group]!.add(tmp);
-//           //events was Map<Group, Appointment>
-//         }
-//       });
-//     });
-//   } else {
-//     print('No data available.');
-//   }
-// }
-
-// from userCalendar
-// List<DropdownMenuItem<String>> firebaseEvents = []; // goal delete this
-// Future<void> getEvents() async {
-//   CollectionReference events =
-//       FirebaseFirestore.instance.collection("events");
-//   final snapshot = await events.get();
-//   if (snapshot.size > 0) {
-//     List<QueryDocumentSnapshot<Object?>> data = snapshot.docs;
-//     data.forEach((element) {
-//       var event = element.data() as Map;
-//       var tmp = Event(
-//           name: event["name"],
-//           ageMin: event["ageMin"],
-//           groupMax: event["groupMax"]);
-//       events.add(tmp);
-
-//       firebaseEvents.add(
-//           DropdownMenuItem(value: event["name"], child: Text(event["name"])));
-//     });
-//   } else {
-//     print('No data available.');
-//   }
-//   print(events);
-// }
+// List<Group> _groups = <Group>[
+//   const Group(name: "Chipmunks", color: Color(0xFF0F8644), age: 1),
+//   const Group(name: "Hummingbirds", color: Color(0xFF8B1FA9), age: 1),
+//   const Group(name: "Tadpoles", color: Color(0xFFD20100), age: 1),
+//   const Group(name: "Sparrows", color: Color(0xFF5DADE2), age: 1),
+//   const Group(name: "Salamanders", color: Color(0xFFDC7633), age: 1),
+//   const Group(name: "Robins", color: Color(0xFFDEB6F1), age: 1),
+//   const Group(name: "Minks", color: Color(0xFF909497), age: 3),
+//   const Group(name: "Otters", color: Color(0xFF117864), age: 3),
+//   const Group(name: "Raccoons", color: Color(0xFF2E4053), age: 3),
+//   const Group(name: "Kingfishers", color: Color(0xFFF4D03F), age: 3),
+//   const Group(name: "Squirrels", color: Color(0xFFEA45E1), age: 3),
+//   const Group(name: "Blue Jays", color: Color(0xFF2471A3), age: 3),
+//   const Group(name: "Deer", color: Color(0xFF504040), age: 5),
+//   const Group(name: "Crows", color: Color(0xFF1C2833), age: 5),
+//   const Group(name: "Bears", color: Color(0xFF60EA7A), age: 5),
+//   const Group(name: "Foxes", color: Color(0xFFD35400), age: 5),
+//   const Group(name: "Herons", color: Color(0xFF456CEA), age: 5),
+//   const Group(name: "Wolves", color: Color(0xFF566573), age: 5),
+//   const Group(name: "Copperheads", color: Color(0xFFD68910), age: 6),
+//   const Group(name: "Timber Rattlers", color: Color(0xFFABEBC6), age: 8),
+//   const Group(name: "Admin", color: Color.fromARGB(255, 0, 0, 0), age: 9999)
+// ];

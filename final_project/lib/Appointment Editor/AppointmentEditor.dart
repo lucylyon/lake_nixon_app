@@ -880,7 +880,7 @@ class _AppointmentEditorState extends State<AppointmentEditor> {
                               if (schedule != null &&
                                   schedule!.times[hour] != null) {
                                 int i = appState.indexEvents(schedule!.name);
-                                int max = appState.events8[i].groupMax;
+                                int max = appState.events[i].groupMax;
                                 int current = schedule!.getList(hour);
                                 if (max < current + groupAmount) {
                                   Fluttertoast.showToast(
@@ -919,7 +919,7 @@ class _AppointmentEditorState extends State<AppointmentEditor> {
                               } else {
                                 int groupAmount = _selectedGroups.length;
                                 int i = appState.indexEvents(name);
-                                int max = appState.events8[i].groupMax;
+                                int max = appState.events[i].groupMax;
                                 int current = groupAmount;
                                 if (schedule != null && max >= current) {
                                   var names = <String>[];
@@ -945,7 +945,7 @@ class _AppointmentEditorState extends State<AppointmentEditor> {
                                 } else {
                                   int groupAmount = _selectedGroups.length;
                                   int i = appState.indexEvents(name);
-                                  int max = appState.events8[i].groupMax;
+                                  int max = appState.events[i].groupMax;
                                   int current = groupAmount;
                                   if (max >= current) {
                                     var count = 0;
@@ -989,7 +989,7 @@ class _AppointmentEditorState extends State<AppointmentEditor> {
                             } else {
                               int groupAmount = _selectedGroups.length;
                               int i = appState.indexEvents(name);
-                              int max = appState.events8[i].groupMax;
+                              int max = appState.events[i].groupMax;
                               int current = groupAmount;
                               if (max >= current) {
                                 var names = <String>[];

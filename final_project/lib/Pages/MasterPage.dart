@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:final_project/Objects/Group.dart';
 import 'package:final_project/Pages/CalendarPage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import "package:syncfusion_flutter_calendar/calendar.dart";
-
-import '../Objects/Group.dart';
+import '../Objects/AppState.dart';
 import '../Objects/Globals.dart';
 
 class MasterPage extends StatefulWidget {
