@@ -9,7 +9,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-import '../AppointmentEditor/AppointmentEditor.dart';
+import '../Appointment Editor/AppointmentEditor.dart';
 import '../Objects/AppState.dart';
 import '../Objects/Globals.dart';
 

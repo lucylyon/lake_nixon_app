@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:html';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project/Objects/Event.dart';
 import 'package:final_project/Objects/LakeAppointment.dart';
@@ -7,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../firebase_options.dart';
+import 'Group.dart';
 
 /// to do:
 /// move colors from globals
@@ -21,8 +23,8 @@ class AppState extends ChangeNotifier {
   List<Appointment> _appointments = [];
   List<Appointment> get appointments => _appointments;
 
-  // List<Group> _groups = []; add groups to database, make getGroups function
-  // List<Group> get groups => _groups;
+  List<Group> _groups = [];
+  List<Group> get groups => _groups;
 
   AppState() {
     init();
@@ -31,6 +33,7 @@ class AppState extends ChangeNotifier {
   bool firstSnapshot = true;
   StreamSubscription<QuerySnapshot>? eventSubscription;
   StreamSubscription<QuerySnapshot>? appointmentSubscription;
+  StreamSubscription<QuerySnapshot>? groupSubscription;
 
   Future<void> init() async {
     await Firebase.initializeApp(
@@ -40,9 +43,11 @@ class AppState extends ChangeNotifier {
       (user) {
         eventSubscription?.cancel();
         appointmentSubscription?.cancel();
+        groupSubscription?.cancel();
         print("starting to listen");
         getEvents();
         getAppointments();
+        getGroups();
         firstSnapshot = false;
         notifyListeners();
       },
@@ -83,6 +88,27 @@ class AppState extends ChangeNotifier {
             ageMin: document.data()['ageMin'],
             groupMax: document.data()['groupMax'],
             name: document.data()['name']));
+      });
+    });
+  }
+
+  Future<void> getGroups() async {
+    groupSubscription = FirebaseFirestore.instance
+        .collection('groups')
+        .snapshots()
+        .listen((snapshot) {
+      print("in groups snapshot");
+      snapshot.docs.forEach((document) {
+        String colorString = document.data()['color'];
+        var colorList = colorString.split(',');
+        _groups.add(Group(
+            name: document.data()['name'],
+            color: Color.fromARGB(
+                int.parse(colorList[0]),
+                int.parse(colorList[1]),
+                int.parse(colorList[2]),
+                int.parse(colorList[3])),
+            age: document.data()['age']));
       });
     });
   }
