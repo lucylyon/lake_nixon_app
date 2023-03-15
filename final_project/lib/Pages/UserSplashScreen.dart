@@ -11,6 +11,8 @@ import '../Objects/Globals.dart';
 import 'LoginPage.dart';
 import '../Objects/AppState.dart';
 
+// get rid of getSavedEvents (probably connor stuff)
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -21,7 +23,8 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    for (Group g in groups) {
+    //FIX
+    for (Group g in oldGroups) {
       createGroup(g);
     }
     getSavedEvents();

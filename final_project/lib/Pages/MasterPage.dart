@@ -175,7 +175,8 @@ class _MasterPageState extends State<MasterPage> {
                             fontFamily: 'Fruit',
                             fontSize: 30)),
                     onPressed: () {
-                      for (Group g in groups) {
+                      //FIX
+                      for (Group g in oldGroups) {
                         createGroup(g);
                       }
                       MasterPush();

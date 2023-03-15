@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project/Pages/UserCalendarPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../Objects/AppState.dart';
 import '../Objects/Globals.dart';
 import '../Objects/Group.dart';
@@ -90,8 +91,35 @@ class _GroupPageState extends State<GroupPage> {
     //);
   }
 
+// return Consumer<AppState>(
+//       builder: (context, appState, child) {
+
   @override
   Widget build(BuildContext context) {
+    // return Consumer<AppState>(
+    //   builder: (context, appState, child) {
+    //     return Scaffold(
+    //         appBar: AppBar(
+    //           title: const Text("List of Groups",
+    //               style: TextStyle(
+    //                   //check here later --- can't insert nixonbrown for some reason?
+    //                   color: Color.fromRGBO(137, 116, 73, 1),
+    //                   fontFamily: 'Fruit')),
+    //           backgroundColor: nixonblue,
+    //         ),
+    //         body: Container(
+    //           padding: const EdgeInsets.fromLTRB(10, 20, 40, 0),
+    //           child: ListView.builder(
+    //               shrinkWrap: true,
+    //               itemCount: appState.groups.length,
+    //               itemBuilder: (context, index) {
+    //                 return GroupItem(
+    //                     onListChanged: _handleCalendar,
+    //                     group: appState.groups[index]);
+    //               }),
+    //         ));
+    //   },
+    // );
     return Scaffold(
       appBar: AppBar(
         title: const Text("List of Groups",
@@ -105,18 +133,13 @@ class _GroupPageState extends State<GroupPage> {
           padding: const EdgeInsets.fromLTRB(10, 20, 40, 0),
           child: ListView(
             // padding: const EdgeInsets.symmetric(vertical: 8.0),
-            children: groups.map((Group) {
+            children: oldGroups.map((Group) {
               return GroupItem(
                 group: Group,
                 onListChanged: _handleCalendar,
               );
             }).toList(),
           )),
-      // floatingActionButton: FloatingActionButton(
-      //     child: const Icon(Icons.add),
-      //     onPressed: () async {
-      //       //_EventInfoPopupForm(context);
-      //     })
     );
   }
 

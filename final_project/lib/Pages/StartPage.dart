@@ -22,7 +22,8 @@ class StartPage extends StatefulWidget {
 class _StartPageState extends State<StartPage> {
   @override
   void initState() {
-    for (Group g in groups) {
+    // FIX
+    for (Group g in oldGroups) {
       createGroup(g);
     }
     getSavedEvents();
@@ -58,6 +59,7 @@ class _StartPageState extends State<StartPage> {
     );
   }
 
+// should probably delete this
   Future<void> getSavedEvents() async {
     CollectionReference schedules =
         FirebaseFirestore.instance.collection("schedules");
@@ -86,8 +88,8 @@ class _StartPageState extends State<StartPage> {
                 subject: app[7],
                 resourceIds: app[8],
                 recurrenceRule: app[9]);
-            var group = indexGroups(key);
-            events[group]!.add(tmp);
+            //var group = indexGroups(key);
+            //  events[group]!.add(tmp);
           }
         });
       });
