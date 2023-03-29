@@ -4,9 +4,11 @@ import 'package:final_project/Pages/GroupPage.dart';
 import 'package:final_project/Pages/CalendarPage.dart';
 import 'package:final_project/Pages/LoginPage.dart';
 import 'package:final_project/Pages/MasterPage.dart';
+import 'package:final_project/Pages/TestPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../Objects/AppState.dart';
 
@@ -23,18 +25,31 @@ class _StartPageState extends State<StartPage> {
   @override
   void initState() {
     // FIX
-    for (Group g in oldGroups) {
-      createGroup(g);
-    }
+    // for (Group g in oldGroups) {
+    //   createGroup(g);
+    // }
     getSavedEvents();
     super.initState();
+  }
+
+  Future<void> TestPagePush() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => TestPage(title: "testin"),
+      ),
+    );
   }
 
   Future<void> groupPagePush() async {
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => GroupPage(title: "List of groups"),
-      ),
+          builder: (context) => ChangeNotifierProvider(
+              create: (context) => AppState(),
+              child: GroupPage(
+                title: "List of Groups",
+              ))
+          //GroupPage(title: "List of groups"),
+          ),
     );
   }
 
@@ -158,6 +173,22 @@ class _StartPageState extends State<StartPage> {
                     },
                   ),
                 ),
+                Container(
+                    padding: const EdgeInsets.all(10),
+                    child: SizedBox(
+                      height: 80,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStatePropertyAll<Color>(nixongreen)),
+                        child: const Text("Test Page",
+                            style:
+                                TextStyle(fontSize: 40, fontFamily: 'Fruit')),
+                        onPressed: () {
+                          TestPagePush();
+                        },
+                      ),
+                    )),
                 Container(
                   alignment: Alignment.bottomCenter,
                   padding: const EdgeInsets.fromLTRB(10, 40, 10, 0),

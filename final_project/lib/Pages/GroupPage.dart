@@ -26,26 +26,61 @@ class _GroupPageState extends State<GroupPage> {
   var groupSizeController = TextEditingController();
   var descriptionController = TextEditingController();
 
-  Future<void> UserPush(Group group) async {
-    await Navigator.of(context).push(
-      MaterialPageRoute(
-          builder: (context) => UserCalendarPage(
-                title: group.name,
-                group: group,
-                isUser: true,
-                master: false,
-              )),
-    );
-    //await Navigator.of(context).push(
-    //MaterialPageRoute(builder: (context) => const StartPage()),
-    //);
-  }
+  // Future<void> UserPush(Group group) async {
+  //   await Navigator.of(context).push(
+  //     MaterialPageRoute(
+  //         builder: (context) => UserCalendarPage(
+  //               title: group.name,
+  //               group: group,
+  //               isUser: true,
+  //               master: false,
+  //             )),
+  //   );
+  //   //await Navigator.of(context).push(
+  //   //MaterialPageRoute(builder: (context) => const StartPage()),
+  //   //);
+  // }
 
-  Future<void> AdminPush(Group group) async {
-    //await Navigator.of(context).push(
-    // MaterialPageRoute(builder: (context) => const SplashScreen()),
-    //);
+  // Future<void> AdminPush(Group group) async {
+  //   //await Navigator.of(context).push(
+  //   // MaterialPageRoute(builder: (context) => const SplashScreen()),
+  //   //);
 
+  //   await Navigator.of(context).push(
+  //     MaterialPageRoute(
+  //       builder: (context) => CalendarPage(
+  //         title: group.name,
+  //         group: group,
+  //         isUser: false,
+  //         master: false,
+  //       ),
+  //     ),
+  //   );
+  //   //await Navigator.of(context).push(
+  //   //MaterialPageRoute(builder: (context) => const StartPage()),
+  //   //);
+  // }
+
+  // void _checkAuth(Group group) async {
+  //   User? user = FirebaseAuth.instance.currentUser;
+
+  //   final DocumentSnapshot snap = await FirebaseFirestore.instance
+  //       .collection("users")
+  //       .doc(user?.uid)
+  //       .get();
+
+  //   setState(() {
+  //     role = snap['role'];
+  //   });
+
+  //   if (role == 'user') {
+  //     UserPush(group);
+  //   } else {
+  //     AdminPush(group);
+  //   }
+  // }
+
+  Future<void> _handleCalendar(Group group) async {
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => CalendarPage(
@@ -56,91 +91,77 @@ class _GroupPageState extends State<GroupPage> {
         ),
       ),
     );
-    //await Navigator.of(context).push(
-    //MaterialPageRoute(builder: (context) => const StartPage()),
-    //);
   }
+  //await Navigator.of(context).push(
+  //MaterialPageRoute(builder: (context) => const StartPage()),
+  //);
+  //  _checkAuth(group);
 
-  void _checkAuth(Group group) async {
-    User? user = FirebaseAuth.instance.currentUser;
+  // HERE
 
-    final DocumentSnapshot snap = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(user?.uid)
-        .get();
+  //   if (role == 'user') {
+  //     UserPush(group);
+  //   } else {
+  //     AdminPush(group);
 
-    setState(() {
-      role = snap['role'];
-    });
-
-    if (role == 'user') {
-      UserPush(group);
-    } else {
-      AdminPush(group);
-    }
-  }
-
-  Future<void> _handleCalendar(Group group) async {
-    print("Chat");
-
-    _checkAuth(group);
-    //await Navigator.of(context).push(
-    //MaterialPageRoute(
-    //builder: (context) => CalendarPage(title: group.name, group: group),
-    //),
-    //);
-  }
+  //await Navigator.of(context).push(
+  //MaterialPageRoute(
+  //builder: (context) => CalendarPage(title: group.name, group: group),
+  //),
+  //);
+  //}
 
 // return Consumer<AppState>(
 //       builder: (context, appState, child) {
 
   @override
   Widget build(BuildContext context) {
-    // return Consumer<AppState>(
-    //   builder: (context, appState, child) {
-    //     return Scaffold(
-    //         appBar: AppBar(
-    //           title: const Text("List of Groups",
-    //               style: TextStyle(
-    //                   //check here later --- can't insert nixonbrown for some reason?
-    //                   color: Color.fromRGBO(137, 116, 73, 1),
-    //                   fontFamily: 'Fruit')),
-    //           backgroundColor: nixonblue,
-    //         ),
-    //         body: Container(
-    //           padding: const EdgeInsets.fromLTRB(10, 20, 40, 0),
-    //           child: ListView.builder(
-    //               shrinkWrap: true,
-    //               itemCount: appState.groups.length,
-    //               itemBuilder: (context, index) {
-    //                 return GroupItem(
-    //                     onListChanged: _handleCalendar,
-    //                     group: appState.groups[index]);
-    //               }),
-    //         ));
-    //   },
-    // );
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("List of Groups",
-            style: TextStyle(
-                //check here later --- can't insert nixonbrown for some reason?
-                color: Color.fromRGBO(137, 116, 73, 1),
-                fontFamily: 'Fruit')),
-        backgroundColor: nixonblue,
-      ),
-      body: Container(
-          padding: const EdgeInsets.fromLTRB(10, 20, 40, 0),
-          child: ListView(
-            // padding: const EdgeInsets.symmetric(vertical: 8.0),
-            children: oldGroups.map((Group) {
-              return GroupItem(
-                group: Group,
-                onListChanged: _handleCalendar,
-              );
-            }).toList(),
-          )),
+    return Consumer<AppState>(
+      builder: (context, appState, child) {
+        return Scaffold(
+            appBar: AppBar(
+              title: const Text("List of Groups",
+                  style: TextStyle(
+                      //check here later --- can't insert nixonbrown for some reason?
+                      color: Color.fromRGBO(137, 116, 73, 1),
+                      fontFamily: 'Fruit')),
+              backgroundColor: nixonblue,
+            ),
+            body: Container(
+              padding: const EdgeInsets.fromLTRB(10, 20, 40, 0),
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: appState.groups.length,
+                  itemBuilder: (context, i) {
+                    // return Text('testing');
+                    return GroupItem(
+                        onListChanged: _handleCalendar,
+                        group: appState.groups[i]);
+                  }),
+            ));
+      },
     );
+    //   return Scaffold(
+    //     appBar: AppBar(
+    //       title: const Text("List of Groups",
+    //           style: TextStyle(
+    //               //check here later --- can't insert nixonbrown for some reason?
+    //               color: Color.fromRGBO(137, 116, 73, 1),
+    //               fontFamily: 'Fruit')),
+    //       backgroundColor: nixonblue,
+    //     ),
+    //     body: Container(
+    //         padding: const EdgeInsets.fromLTRB(10, 20, 40, 0),
+    //         child: ListView(
+    //           // padding: const EdgeInsets.symmetric(vertical: 8.0),
+    //           children: oldGroups.map((Group) {
+    //             return GroupItem(
+    //               group: Group,
+    //               onListChanged: _handleCalendar,
+    //             );
+    //           }).toList(),
+    //         )),
+    //   );
   }
 
   Future<void> _EventInfoPopupForm(BuildContext context) async {

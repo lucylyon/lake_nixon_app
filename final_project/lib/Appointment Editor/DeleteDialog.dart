@@ -6,6 +6,7 @@ import '../Objects/Event.dart';
 import '../Objects/Globals.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
+enum Delete { event, series }
 
 class DeleteDialog extends StatefulWidget {
   const DeleteDialog(this.selectedAppointment, this.events);

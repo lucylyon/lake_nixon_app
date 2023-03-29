@@ -176,9 +176,9 @@ class _MasterPageState extends State<MasterPage> {
                             fontSize: 30)),
                     onPressed: () {
                       //FIX
-                      for (Group g in oldGroups) {
-                        createGroup(g);
-                      }
+                      // for (Group g in oldGroups) {
+                      //   createGroup(g);
+                      // }
                       MasterPush();
                     },
                   ),

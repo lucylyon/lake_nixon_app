@@ -1,11 +1,12 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:intl/intl.dart' show DateFormat;
- import 'package:syncfusion_flutter_core/core.dart';
+import 'package:syncfusion_flutter_core/core.dart';
 
 import '../Objects/Globals.dart';
+
+enum EndRule { never, endDate, count }
 
 class CustomRule extends StatefulWidget {
   const CustomRule(this.selectedAppointment, this.appointmentColor, this.events,
@@ -24,6 +25,24 @@ class CustomRule extends StatefulWidget {
 }
 
 class CustomRuleState extends State<CustomRule> {
+  List<String> mobileRecurrence = <String>['day', 'week', 'month', 'year'];
+  List<String> weekDayPosition = <String>[
+    'first',
+    'second',
+    'third',
+    'fourth',
+    'last'
+  ];
+  List<String> weekDay = <String>[
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday'
+  ];
+
   late DateTime _startDate;
   EndRule? _endRule;
   RecurrenceProperties? _recurrenceProperties;

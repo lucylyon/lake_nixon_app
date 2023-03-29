@@ -1,11 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:final_project/Pages/CalendarPage.dart';
-
-import 'Event.dart';
 import 'Group.dart';
 
 Color nixonblue = const Color.fromRGBO(165, 223, 249, 1);
@@ -15,37 +10,9 @@ Color nixongreen = const Color.fromRGBO(81, 146, 78, 1);
 
 FirebaseFirestore db = FirebaseFirestore.instance;
 
-List<Event> dbEvents = [];
-
-Map<Group, List<Appointment>> events = {};
+// Map<Group, List<Appointment>> events = {};
 
 var assignments = {};
-
-var events2 = {};
-
-enum Edit { event, series }
-
-enum Delete { event, series }
-
-enum EndRule { never, endDate, count }
-
-List<String> weekDay = <String>[
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
-  'Sunday'
-];
-List<String> weekDayPosition = <String>[
-  'first',
-  'second',
-  'third',
-  'fourth',
-  'last'
-];
-List<String> mobileRecurrence = <String>['day', 'week', 'month', 'year'];
 
 List<Group> oldGroups = <Group>[
   const Group(name: "Chipmunks", color: Color.fromRGBO(15, 134, 68, 1), age: 1),
@@ -78,37 +45,26 @@ List<Group> oldGroups = <Group>[
   const Group(name: "Admin", color: Color.fromARGB(255, 0, 0, 0), age: 9999)
 ];
 
-// int indexEvents(String name) {
+// will probably be changed/deleted. used for getSavedEvents
+// Group? indexGroups(String name) {
 //   int count = 0;
-//   for (Event element in dbEvents) {
-//     if (element.name == name) {
-//       return count;
+//   int index = -1;
+//   Group? group;
+//   events.forEach((key, value) {
+//     if (key.name == name) {
+//       index = count;
+//       group = key;
 //     }
 //     count++;
-//   }
-//   return -1;
-// }
-
-// will probably be changed/deleted. used for getSavedEvents
-Group? indexGroups(String name) {
-  int count = 0;
-  int index = -1;
-  Group? group;
-  events.forEach((key, value) {
-    if (key.name == name) {
-      index = count;
-      group = key;
-    }
-    count++;
-  });
-  return group;
-}
+//   });
+//   return group;
+//}
 
 //will probably  need to be changed;
-void createGroup(Group group) {
-  if (events.containsKey(group)) {
-  } else {
-    events[group] = <Appointment>[];
-    assignments[group] = <Group>[];
-  }
-}
+// void createGroup(Group group) {
+//   if (events.containsKey(group)) {
+//   } else {
+//     events[group] = <Appointment>[];
+//     assignments[group] = <Group>[];
+//   }
+// }

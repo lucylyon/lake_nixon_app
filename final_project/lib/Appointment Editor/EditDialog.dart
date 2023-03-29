@@ -3,6 +3,8 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 import '../Objects/Globals.dart';
 
+enum Edit { event, series }
+
 class EditDialog extends StatefulWidget {
   const EditDialog(this.newAppointment, this.selectedAppointment,
       this.recurrenceProperties, this.events);
