@@ -59,13 +59,14 @@ class _CalendarPageState extends State<CalendarPage> {
   final GlobalKey _globalKey = GlobalKey();
   final ScrollController _controller = ScrollController();
   final CalendarController _calendarController = CalendarController();
+  //LakeNixonEvent? _selectedAppointment;
   Appointment? _selectedAppointment;
   final List<String> _colorNames = <String>[];
   final List<Color> _colorCollection = <Color>[];
   final List<String> _timeZoneCollection = <String>[];
   late AppointmentDataSource _events;
   List<DropdownMenuItem<String>> firebaseEvents = [];
-  //List<Appointment> savedEvents = [];
+  List<Appointment> savedEvents = [];
 
   //bool get user => widget.isUser;
   //bool user = widget.isUser;
@@ -74,10 +75,39 @@ class _CalendarPageState extends State<CalendarPage> {
   void initState() {
     _currentView = CalendarView.workWeek;
     _calendarController.view = _currentView;
+    bool user = widget.isUser;
+    //_checkAuth();
+    //PRoblem of having to back out seems to come from these being futures
+    //getEvents();
+    //getSavedEvents();
     // _events = AppointmentDataSource(_getDataSource(widget.group));
 
     super.initState();
   }
+
+  // Future<void> getEvents() async {
+  //   CollectionReference events =
+  //       FirebaseFirestore.instance.collection("events");
+  //   final snapshot = await events.get();
+  //   if (snapshot.size > 0 && dbEvents.length == 0) {
+  //     List<QueryDocumentSnapshot<Object?>> data = snapshot.docs;
+  //     data.forEach((element) {
+  //       var event = element.data() as Map;
+  //       var tmp = Event(
+  //           name: event["name"],
+  //           ageMin: event["ageMin"],
+  //           groupMax: event["groupMax"]);
+  //       dbEvents.add(tmp);
+  //     });
+  //   } else {
+  //     print('No data available.3');
+  //   }
+  //   for (Event event in dbEvents) {
+  //     firebaseEvents
+  //         .add(DropdownMenuItem(value: event.name, child: Text(event.name)));
+  //   }
+  //   print(dbEvents);
+  // }
 
   // List<Appointment> _getDataSource(Group group) {
   //   _colorNames.add('Green');

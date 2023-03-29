@@ -133,7 +133,6 @@ class _GroupPageState extends State<GroupPage> {
                   shrinkWrap: true,
                   itemCount: appState.groups.length,
                   itemBuilder: (context, i) {
-                    // return Text('testing');
                     return GroupItem(
                         onListChanged: _handleCalendar,
                         group: appState.groups[i]);

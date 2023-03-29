@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+// import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'Group.dart';
 
 Color nixonblue = const Color.fromRGBO(165, 223, 249, 1);
@@ -10,9 +11,9 @@ Color nixongreen = const Color.fromRGBO(81, 146, 78, 1);
 
 FirebaseFirestore db = FirebaseFirestore.instance;
 
-// Map<Group, List<Appointment>> events = {};
+Map<Group, List<Appointment>> events = {};
 
-var assignments = {};
+// var assignments = {};
 
 List<Group> oldGroups = <Group>[
   const Group(name: "Chipmunks", color: Color.fromRGBO(15, 134, 68, 1), age: 1),
